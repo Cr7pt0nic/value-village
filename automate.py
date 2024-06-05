@@ -168,7 +168,9 @@ def save_image(img_url, folder_path):
 
 def banner():
     """Print a random banner design using pyfiglet."""
-    banner_text = pyfiglet.figlet_format("Discount Village")
+    fonts = pyfiglet.FigletFont.getFonts()
+    font = random.choice(fonts)
+    banner_text = pyfiglet.figlet_format("Discount Village", font=font)
     print(banner_text)
     print("-- made by Null. With love of course <3")
 
