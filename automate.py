@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
+# update URL
 GITHUB_URL = (
     "https://raw.githubusercontent.com/Cr7pt0nic/value-village/main/automate.py"
 )
