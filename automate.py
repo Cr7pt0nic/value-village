@@ -181,14 +181,15 @@ def main():
 
     autoupdate()
 
-    # configuring driver
+    # inputting answers
     zipcode = input("Enter your zipcode: ")
     emailinput = input("Enter your email: ")
 
+    # configuring driver
     driver = configure_webdriver()
     driver.get("https://valuevillagelistens.com/Index.aspx?VisitType=2")
 
-    # inputting code
+    # inputting secret sauce code
     cn1_field = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "CN1"))
     )
