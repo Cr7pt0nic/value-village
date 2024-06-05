@@ -2,6 +2,7 @@ import os
 import time
 import requests
 import hashlib
+import pyfiglet
 from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -165,7 +166,16 @@ def save_image(img_url, folder_path):
     print(f"Image saved to {file_path}")
 
 
+def banner():
+    """Print a random banner design using pyfiglet."""
+    banner_text = pyfiglet.figlet_format("Discount Village")
+    print(banner_text)
+    print("-- made by Null. With love of course <3")
+
+
 def main():
+    banner()
+
     autoupdate()
 
     # configuring driver
