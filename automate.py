@@ -6,17 +6,16 @@ import pyfiglet
 import random
 from datetime import datetime, timedelta
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 # update URL
 GITHUB_URL = (
     "https://raw.githubusercontent.com/Cr7pt0nic/value-village/main/automate.py"
 )
-
 
 def get_file_hash(filepath):
     """Calculating SHA256 hash for update file"""
@@ -26,14 +25,12 @@ def get_file_hash(filepath):
         hasher.update(buf)
     return hasher.hexdigest()
 
-
 def get_github_file_hash(url):
     """Get updated file hash"""
     response = requests.get(url)
     hasher = hashlib.sha256()
     hasher.update(response.content)
     return hasher.hexdigest()
-
 
 def autoupdate():
     """Check update and prompt user"""
@@ -51,15 +48,15 @@ def autoupdate():
             print("Script updated. Please re-run the script.")
             exit()
 
-
 def configure_webdriver():
-    # fixed
     options = Options()
     options.add_argument("--disable-gpu")
-    driver_path = "/usr/bin/chromedriver"
-    service = Service(driver_path)
-    return webdriver.Chrome(service=service, options=options)
-
+    # options.add_argument("--headless")  # Run in headless mode
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    # Using WebDriver Manager to download and set up ChromeDriver
+    driver_path = ChromeDriverManager().install()
+    return webdriver.Chrome(executable_path=driver_path, options=options)
 
 def click_next(driver):
     """Click the 'Next' button."""
@@ -67,7 +64,6 @@ def click_next(driver):
         EC.element_to_be_clickable((By.ID, "NextButton"))
     )
     next_button.click()
-
 
 def select_date(driver, date_str):
     """Select a date from the date calendar"""
@@ -98,7 +94,6 @@ def select_date(driver, date_str):
     )
     date_element.click()
 
-
 def click_checkboxes(driver, checkbox_ids):
     """Click on multiple checkbox elements."""
     for checkbox_id in checkbox_ids:
@@ -107,7 +102,6 @@ def click_checkboxes(driver, checkbox_ids):
         )
         checkbox_div.click()
         time.sleep(1)
-
 
 def select_time(driver):
     """Selecting the time value of 11AM."""
@@ -125,7 +119,6 @@ def select_time(driver):
     )
     meridian_select.select_by_value("AM")
 
-
 def click_questions(driver, *click_ids):
     """Click on multiple question elements."""
     for click_id in click_ids:
@@ -134,14 +127,12 @@ def click_questions(driver, *click_ids):
         )
         driver.execute_script("arguments[0].click();", question)
 
-
 def input_text(driver, field_id, text):
     """Input text into a text field."""
     text_field = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, field_id))
     )
     text_field.send_keys(text)
-
 
 def handle_random_question(driver):
     """Handling the random questions about household donation frequency."""
@@ -158,7 +149,6 @@ def handle_random_question(driver):
         # The question did not appear, proceed without action
         pass
 
-
 def save_image(img_url, folder_path):
     """Save image from the provided URL to the specified folder path."""
     current_date = datetime.now().strftime("%Y-%m-%d")
@@ -169,7 +159,6 @@ def save_image(img_url, folder_path):
         file.write(response.content)
     print(f"Image saved to {file_path}")
 
-
 def banner():
     """Print a random banner design using pyfiglet."""
     fonts = pyfiglet.FigletFont.getFonts()
@@ -177,7 +166,6 @@ def banner():
     banner_text = pyfiglet.figlet_format("Discount Village", font=font)
     print(banner_text)
     print("-- made by Null. With love of course <3")
-
 
 def main():
     banner()
@@ -289,7 +277,6 @@ def main():
 
     time.sleep(2)
     driver.quit()
-
 
 if __name__ == "__main__":
     main()
