@@ -6,7 +6,7 @@ import pyfiglet
 import random
 from datetime import datetime, timedelta
 from selenium import webdriver
-from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -53,10 +53,12 @@ def autoupdate():
 
 
 def configure_webdriver():
+    # fixed
     options = Options()
-    options.add_argument("--disable-gpu")  # Disable GPU acceleration
-    driver_path = "/usr/bin/chromedriver"  # Path to ChromeDriver executable
-    return webdriver.Chrome(executable_path=driver_path, options=options)
+    options.add_argument("--disable-gpu")
+    driver_path = "/usr/bin/chromedriver"
+    service = Service(driver_path)
+    return webdriver.Chrome(service=service, options=options)
 
 
 def click_next(driver):
@@ -68,13 +70,14 @@ def click_next(driver):
 
 
 def select_date(driver, date_str):
-    """Select a date from the date calender"""
+    """Select a date from the date calendar"""
     date_picker_button = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CLASS_NAME, "ui-datepicker-trigger"))
     )
     date_picker_button.click()
 
-    date_picker = WebDriverWait(driver, 10).until(
+    # fixed
+    WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.ID, "ui-datepicker-div"))
     )
 
