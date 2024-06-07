@@ -1,3 +1,4 @@
 requests
 pyfiglet
 selenium
+webdriver_manager
