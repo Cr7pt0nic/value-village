@@ -5,6 +5,7 @@ import hashlib
 import pyfiglet
 import random
 import platform
+import json
 from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -53,13 +54,6 @@ def autoupdate():
             exit()
 
 
-# def configure_webdriver():
-#     # fixed
-#     options = Options()
-#     options.add_argument("--disable-gpu")
-#     driver_path = "./chromedrive/chromedriver"
-#     service = Service(driver_path)
-#     return webdriver.Chrome(service=service, options=options)
 def configure_webdriver():
     options = Options()
     options.add_argument("--disable-gpu")
@@ -96,7 +90,6 @@ def select_date(driver, date_str):
     )
     date_picker_button.click()
 
-    # fixed
     WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.ID, "ui-datepicker-div"))
     )
@@ -113,8 +106,11 @@ def select_date(driver, date_str):
         current_month = driver.find_element(By.CLASS_NAME, "ui-datepicker-month").text
         current_year = driver.find_element(By.CLASS_NAME, "ui-datepicker-year").text
 
+    date_int = int(date_str)
+
+    # fixed XPATH issue due to webpage calender being a bitch
     date_element = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, f'//a[text()="{date_str}"]'))
+        EC.element_to_be_clickable((By.XPATH, f'//a[@data-date="{date_int}"]'))
     )
     date_element.click()
 
@@ -204,9 +200,12 @@ def main():
 
     autoupdate()
 
-    # inputting answers
-    zipcode = input("Enter your zipcode: ")
-    emailinput = input("Enter your email: ")
+    # Load configuration from JSON file
+    with open("config.json") as config_file:
+        config = json.load(config_file)
+
+    zipcode = config["zipcode"]
+    emailinput = config["email"]
 
     # configuring driver
     driver = configure_webdriver()
@@ -220,7 +219,7 @@ def main():
 
     # Selecting the date
     global seven_days_ago
-    seven_days_ago = datetime.now() - timedelta(days=7)
+    seven_days_ago = datetime.now() - timedelta(days=5)
     date_str = seven_days_ago.strftime("%d")
 
     # Selecting date then clicking next
