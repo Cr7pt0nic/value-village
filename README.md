@@ -12,6 +12,15 @@ install required modules
 pip install -r requirements.txt
 ```
 
+change and modify the config file to include zipcode and email
+
+```
+{
+    "zipcode": "ZIPCODE HERE",
+    "email": "EMAIL HERE"
+}
+```
+
 run the script
 ```
 python3 automate.py
